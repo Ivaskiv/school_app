@@ -9,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// Універсальна функція для виконання запитів
 const handleApiRequest = async (method, url, data = null, token = null) => {
   try {
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
