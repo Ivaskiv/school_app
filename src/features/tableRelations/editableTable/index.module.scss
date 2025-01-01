@@ -1,0 +1,22 @@
+.editableCell {
+  position: relative;
+}
+.editIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.editableCell:hover .editIcon {
+  opacity: 1;
+}
+
+.editIcon:hover {
+  color: #007bff;
+}

@@ -1,0 +1,25 @@
+.tableContainer {
+  margin: 20px;
+}
+
+.toggleButton {
+  padding: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  border: 1px solid gray;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: lightgray;
+}

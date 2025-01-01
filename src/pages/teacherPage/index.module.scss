@@ -1,0 +1,21 @@
+.listsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+
+  > * {
+    flex: 1 1 100%;
+  }
+  @media (min-width: 600px) {
+    > * {
+      flex: 1 1 calc(50% - 10px);
+    }
+  }
+
+  @media (min-width: 900px) {
+    > * {
+      flex: 1 1 calc(33.33% - 10px);
+    }
+  }
+}

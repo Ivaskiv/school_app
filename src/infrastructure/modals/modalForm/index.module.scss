@@ -1,0 +1,79 @@
+h2 {
+  margin: 0;
+  padding-bottom: 20px;
+  font-family: var(--font-inter-medium);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+form {
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+}
+
+.text_form {
+  font-family: var(--font-inter-regular);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--color-text-light-grey);
+  padding-bottom: 40px;
+  white-space: normal;
+  overflow: visible;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  padding: 16px 18px;
+  margin: 0;
+  border: 1px solid rgba(25, 26, 21, 0.1);
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.input_block {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.input_block input {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.button_sign_up,
+.button_login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  gap: 8px;
+  width: 100%;
+  max-width: 438px;
+  height: 52px;
+  background: #54be96;
+  border-radius: 30px;
+  position: relative;
+}
+
+.validation_error {
+  padding: 0 0 0 10px;
+  margin: 0;
+  position: absolute;
+  font-family: var(--font-inter-regular);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  color: red;
+}

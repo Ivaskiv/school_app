@@ -1,0 +1,31 @@
+.tableCell {
+  position: relative;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.tableCell.active {
+  background-color: lightblue;
+}
+
+.editIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, fill 0.3s ease;
+  fill: red;
+}
+
+.tableCell:hover .editIcon,
+.tableCell.active .editIcon {
+  opacity: 1;
+  pointer-events: auto;
+  fill: green;
+}
+
+.editIcon:hover {
+  fill: #333;
+}

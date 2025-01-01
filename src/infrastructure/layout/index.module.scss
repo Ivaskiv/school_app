@@ -1,0 +1,62 @@
+// header
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f4f4f4;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logo {
+  flex: 1;
+}
+
+.logoImage {
+  height: 40px; /* Розмір логотипа */
+}
+
+.nav {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: #007bff;
+}
+
+.btnsAuth {
+  display: flex;
+  gap: 15px;
+}
+
+.btnsAuth a,
+.btnsAuth button {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btnsAuth a:hover,
+.btnsAuth button:hover {
+  color: #007bff;
+}

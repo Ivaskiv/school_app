@@ -1,0 +1,10 @@
+.droppable {
+  border: 2px dashed #ccc;
+  padding: 16px;
+  min-height: 100px;
+  background-color: #f9f9f9;
+}
+
+.droppable.over {
+  background-color: #d3f9d8;
+}
