@@ -3,19 +3,20 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { registerSchoolAndAdminAsync } from '../../../features/auth/redux/authOperations';
 
-const RegistrationForm = () => {
+export default function RegistrationForm() {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    schoolName: '',
-    schoolAddress: '',
-    schoolEmail: '',
-    adminName: '',
-    adminEmail: '',
-    adminPassword: '',
+    schoolName: '123',
+    schoolAddress: 'str123',
+    schoolEmail: '123@gmail.com',
+    adminName: 'admin123',
+    adminEmail: 'admin123@gmail.com',
+    adminPassword: 'admin123@123',
   });
 
   const handleInputChange = useCallback(e => {
     const { name, value } = e.target;
+    console.log(`Input changed: ${name} = ${value}`);
     setFormData(prevState => ({ ...prevState, [name]: value }));
   }, []);
 
@@ -24,6 +25,8 @@ const RegistrationForm = () => {
 
     const { schoolName, schoolAddress, schoolEmail, adminName, adminEmail, adminPassword } =
       formData;
+
+    console.log('Form submitted with data:', formData);
 
     if (
       !schoolName ||
@@ -47,17 +50,23 @@ const RegistrationForm = () => {
       adminRole: 'mainAdmin',
     };
 
+    console.log('Dispatching form data:', formDataWithRole);
+
     try {
       const response = await dispatch(registerSchoolAndAdminAsync(formDataWithRole));
+      console.log('Registration response:', response);
 
-      if (response.error) {
-        throw new Error(response.error.message);
+      if (response.type.includes('rejected')) {
+        console.error('Registration failed:', response.payload);
+        toast.error(response.payload || 'Registration failed.');
+        return;
       }
 
       toast.success('School and admin registered successfully!');
+      console.log('Registration successful!');
     } catch (error) {
-      console.error('Registration error:', error);
-      toast.error(error.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', error.message);
+      toast.error(error.message || 'Registration failed.');
     }
   };
 
@@ -115,6 +124,4 @@ const RegistrationForm = () => {
       <button type="submit">Register</button>
     </form>
   );
-};
-
-export default RegistrationForm;
+}

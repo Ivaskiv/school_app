@@ -8,7 +8,7 @@ import {
   updateUser as updateUserAPI,
   logout as logoutAPI,
 } from '../../../apiConfig';
-import axios from 'axios';
+import axios from '../../../../init';
 
 const handleApiRequest = async (apiFunc, args, rejectWithValue) => {
   try {
@@ -47,7 +47,7 @@ export const registerSchoolAndAdminAsync = createAsyncThunk(
   'auth/registerSchoolAndAdmin',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/register`, formData);
+      const response = await axios.post('/auth/register', formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

@@ -1,4 +1,4 @@
-import './infrastructure/api/init.js';
+import '../init.js';
 import { Route, Routes } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { Provider } from 'react-redux';
@@ -8,8 +8,8 @@ import SchoolManagement from './pages/schoolManagement/index.jsx';
 import TabsPages from './pages/tabsPages/index.jsx';
 import ClassPage from './pages/classPage/index.jsx';
 import TeacherPage from './pages/teacherPage/index.jsx';
-import RegistrationForm from './features/auth/modalForm/RegistrationForm.jsx';
 import MainLayout from './infrastructure/layout/MainLayout.jsx';
+import RegistrationForm from './features/auth/modalForm/RegistrationForm.jsx';
 const Home = lazy(() => import('./pages/homePage/index.jsx'));
 
 const App = () => {

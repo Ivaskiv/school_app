@@ -1,4 +1,4 @@
-import axios from './infrastructure/api/init';
+import axios from '../init';
 
 export const registerSchoolAndAdmin = async data => {
   return await axios.post('/auth/registerSchoolAndAdmin', data);
