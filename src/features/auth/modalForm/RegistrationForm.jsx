@@ -6,12 +6,12 @@ import { registerSchoolAndAdmin } from '../../../apiConfig';
 const RegistrationForm = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    schoolName: '',
-    schoolAddress: '',
-    schoolEmail: '',
-    adminName: '',
-    adminEmail: '',
-    adminPassword: '',
+    schoolName: 'school3',
+    schoolAddress: 'str13',
+    schoolEmail: 'school3@gmail.com',
+    adminName: 'mainAdminSchool3',
+    adminEmail: 'mainAdminSchool3@gmail.com',
+    adminPassword: '123123123',
   });
 
   const handleInputChange = useCallback(e => {
