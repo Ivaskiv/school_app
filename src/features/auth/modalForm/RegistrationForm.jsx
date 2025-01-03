@@ -1,17 +1,17 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { registerSchoolAndAdmin } from '../../../apiConfig';
+import { registerSchoolAndAdminAsync } from '../../../features/auth/redux/authOperations';
 
 const RegistrationForm = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    schoolName: 'school3',
-    schoolAddress: 'str13',
-    schoolEmail: 'school3@gmail.com',
-    adminName: 'mainAdminSchool3',
-    adminEmail: 'mainAdminSchool3@gmail.com',
-    adminPassword: '123123123',
+    schoolName: '',
+    schoolAddress: '',
+    schoolEmail: '',
+    adminName: '',
+    adminEmail: '',
+    adminPassword: '',
   });
 
   const handleInputChange = useCallback(e => {
@@ -22,27 +22,42 @@ const RegistrationForm = () => {
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const { schoolName, schoolAddress, adminName, adminEmail, adminPassword } = formData;
+    const { schoolName, schoolAddress, schoolEmail, adminName, adminEmail, adminPassword } =
+      formData;
 
-    if (!schoolName || !schoolAddress || !adminName || !adminEmail || !adminPassword) {
+    if (
+      !schoolName ||
+      !schoolAddress ||
+      !schoolEmail ||
+      !adminName ||
+      !adminEmail ||
+      !adminPassword
+    ) {
       toast.error('All fields are required!');
       return;
     }
 
+    // Додаємо роль адміністратора
+    const formDataWithRole = {
+      ...formData,
+      adminRole: 'admin', // Роль адміністратора
+    };
+
     try {
-      const response = await dispatch(registerSchoolAndAdmin(formData));
-      console.log('Registration success:', response);
+      const response = await dispatch(registerSchoolAndAdminAsync(formDataWithRole));
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
       toast.success('School and admin registered successfully!');
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error('Registration failed. Please try again.');
+      toast.error(error.message || 'Registration failed. Please try again.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Register School & Admin</h2>
-
       <input
         type="text"
         name="schoolName"
