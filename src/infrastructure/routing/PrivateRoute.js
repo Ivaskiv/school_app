@@ -1,15 +1,14 @@
-// PrivateRoute.jsx
-import { Route, Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem('token');
+export const PrivateRoute = ({ element, redirectTo = '/' }) => {
+  const { isLoggedIn, isRefreshing } = useAuth();
+  const shouldRedirect = !isLoggedIn && !isRefreshing;
 
-  return (
-    <Route
-      {...rest}
-      render={props => (token ? <Component {...props} /> : <Redirect to="/login" />)}
-    />
-  );
+  return shouldRedirect ? <Navigate to={redirectTo} /> : element;
 };
 
-export default PrivateRoute;
+// PrivateRoute використовує useAuth() для перевірки авторизації користувача.
+//Якщо користувач авторизований, PrivateRoute рендерить переданий компонент.
+//Якщо користувач не авторизований, він перенаправляється на сторінку
+//логіну(/login).

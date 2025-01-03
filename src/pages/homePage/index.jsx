@@ -1,40 +1,58 @@
-// import style from './index.module.scss';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import Dashboard from '../../components/dashboard/Dashboard';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectRoles } from '../../features/auth/redux/authSlice';
 import { registerUser } from '../../apiConfig';
-import RegistrationForm from '../../infrastructure/modals/modalForm/RegistrationForm';
+import ModalAuth from '../../features/auth/modalAuth/ModalAuth';
 
 export default function Home() {
   const dispatch = useDispatch();
-  const availableRoles = useSelector(selectRoles);
-  console.log('Available roles:', availableRoles);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [authState, setAuthState] = useState({
+    isLoggedIn: false,
+    isRegistered: false,
+    isModalOpen: false,
+  });
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     console.log('User logged in');
-    setIsLoggedIn(true);
-  };
+    setAuthState(prevState => ({ ...prevState, isLoggedIn: true }));
+  }, []);
 
-  const handleRegistration = async data => {
-    console.log('Registering user with data:', data);
-    try {
-      await dispatch(registerUser(data)).unwrap();
-      console.log('User successfully registered');
-      setIsRegistered(true);
-    } catch (error) {
-      console.error('Registration failed:', error.message);
-    }
-  };
-  if (isLoggedIn) {
+  const handleRegistration = useCallback(
+    async data => {
+      console.log('Registering user with data:', data);
+      try {
+        await dispatch(registerUser(data)).unwrap();
+        console.log('User successfully registered');
+        setAuthState(prevState => ({
+          ...prevState,
+          isRegistered: true,
+          isModalOpen: false,
+        }));
+      } catch (error) {
+        console.error('Registration failed:', error.message);
+      }
+    },
+    [dispatch]
+  );
+
+  if (authState.isLoggedIn) {
     return <Dashboard />;
   }
   return (
     <div>
-      {!isRegistered ? (
-        <RegistrationForm onSubmit={handleRegistration} roles={availableRoles || {}} />
+      <button onClick={() => setAuthState(prevState => ({ ...prevState, isModalOpen: true }))}>
+        Open Auth Modal
+      </button>
+      <ModalAuth
+        isOpen={authState.isModalOpen}
+        onClose={() => setAuthState(prevState => ({ ...prevState, isModalOpen: false }))}
+        type="register"
+        onSubmit={handleRegistration}
+      />
+      {!authState.isRegistered ? (
+        <div>
+          <h2>Registration Form</h2>
+        </div>
       ) : (
         <div>
           <h2>Login</h2>

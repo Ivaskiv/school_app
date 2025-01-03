@@ -1,3 +1,4 @@
+//authOperations.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   registerSchoolAndAdmin,
@@ -5,45 +6,68 @@ import {
   loginUser as loginUserAPI,
   registerUser as registerUserAPI,
   updateUser as updateUserAPI,
-  signOut,
+  logout as logoutAPI,
 } from '../../../apiConfig';
+import axios from 'axios';
 
-// Універсальна функція для обробки запитів API
 const handleApiRequest = async (apiFunc, args, rejectWithValue) => {
   try {
-    const data = await apiFunc(args);
-    return data;
+    const response = await apiFunc(args);
+    return response.data;
   } catch (error) {
-    return rejectWithValue(error.response?.data || 'Operation failed');
+    const errorMsg = error.response?.data?.message || 'Operation failed';
+    return rejectWithValue(errorMsg);
   }
 };
 
-// Реєстрація адміністратора школи
-export const registerAdmin = createAsyncThunk('auth/registerAdmin', async (schoolData, thunkAPI) =>
-  handleApiRequest(registerSchoolAndAdmin, schoolData, thunkAPI.rejectWithValue)
+const setAuthToken = token => {
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common.Authorization;
+  }
+};
+
+const createApiThunk = (actionType, apiFunc) =>
+  createAsyncThunk(actionType, async (args, thunkAPI) =>
+    handleApiRequest(apiFunc, args, thunkAPI.rejectWithValue)
+  );
+
+const loginWithToken = async (apiFunc, credentials, thunkAPI) => {
+  try {
+    const response = await apiFunc(credentials);
+    setAuthToken(response.token);
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
+  }
+};
+
+export const registerSchoolAndAdminAsync = createAsyncThunk(
+  'auth/registerSchoolAndAdmin',
+  async (data, { rejectWithValue }) => {
+    return handleApiRequest(registerSchoolAndAdmin, data, rejectWithValue);
+  }
 );
 
-// Логін адміністратора
-export const loginAdmin = createAsyncThunk('auth/loginAdmin', async (credentials, thunkAPI) =>
-  handleApiRequest(loginAdminAPI, credentials, thunkAPI.rejectWithValue)
+export const registerAdmin = createApiThunk('auth/registerAdmin', registerSchoolAndAdmin);
+
+export const loginAdmin = createApiThunk('auth/loginAdmin', (credentials, thunkAPI) =>
+  loginWithToken(loginAdminAPI, credentials, thunkAPI)
+);
+export const registerUser = createApiThunk('auth/registerUser', registerUserAPI);
+
+export const loginUser = createApiThunk('auth/loginUser', (credentials, thunkAPI) =>
+  loginWithToken(loginUserAPI, credentials, thunkAPI)
 );
 
-// Реєстрація звичайного користувача (адмін, менеджер, вчитель, учень)
-export const registerUser = createAsyncThunk('auth/registerUser', async (userData, thunkAPI) =>
-  handleApiRequest(registerUserAPI, userData, thunkAPI.rejectWithValue)
-);
+export const updateUser = createApiThunk('auth/updateUser', updateUserAPI);
 
-// Логін звичайного користувача
-export const loginUser = createAsyncThunk('auth/loginUser', async (credentials, thunkAPI) =>
-  handleApiRequest(loginUserAPI, credentials, thunkAPI.rejectWithValue)
-);
-
-// Вихід із системи
-export const logout = createAsyncThunk('auth/logout', async (_, thunkAPI) =>
-  handleApiRequest(signOut, null, thunkAPI.rejectWithValue)
-);
-
-// Оновлення даних користувача
-export const updateUser = createAsyncThunk('auth/updateUser', async ({ id, userData }, thunkAPI) =>
-  handleApiRequest(updateUserAPI, { id, userData }, thunkAPI.rejectWithValue)
-);
+export const logout = createApiThunk('auth/logout', async (_, thunkAPI) => {
+  try {
+    await logoutAPI();
+    setAuthToken(null);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Logout failed');
+  }
+});

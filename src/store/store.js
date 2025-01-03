@@ -5,6 +5,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
+import authReducer from '../features/auth/redux/authSlice';
+
 import schoolReducer from '../pages/redux/schoolSlice';
 import pupilsReducer from '../components/pupilsList/redux/pupilsSlice';
 import teachersReducer from '../components/teachersList/redux/teachersSlice';
@@ -22,17 +24,21 @@ import relationsReducer from '../features/tableRelations/redux/relationsSlice';
 
 import classTeacherReducer from '../features/сlassesRelations/classTeacher/redux/classTeacherSlice';
 const rootReducer = combineReducers({
+  auth: authReducer,
+
   school: schoolReducer,
   pupils: pupilsReducer,
   teachers: teachersReducer,
   classes: classesReducer,
   subjects: subjectsReducer,
+
   classesTeachers: classesTeachersReducer,
   classTeacher: classTeacherReducer,
   classesPupils: classesPupilsReducer,
   teachersClasses: teachersClassesReducer,
   classesSubjects: classesSubjectsReducer,
   teachersSubjects: teachersSubjectsReducer,
+
   relations: relationsReducer,
 });
 
