@@ -9,9 +9,12 @@ import {
 } from './authOperations';
 
 const initialState = {
+  school: null,
+  admin: null,
+  status: 'idle',
+  error: null,
   user: null,
   token: null,
-  error: null,
   loading: false,
   roles: [],
   currentUser: {},
@@ -20,6 +23,7 @@ const initialState = {
 const handlePending = state => {
   state.loading = true;
   state.error = null;
+  state.status = 'loading';
 };
 
 const handleFulfilled = (state, action) => {
@@ -27,11 +31,13 @@ const handleFulfilled = (state, action) => {
   state.token = action.payload.token;
   state.user = action.payload.user;
   state.roles = action.payload.roles || [];
+  state.status = 'succeeded';
 };
 
 const handleRejected = (state, action) => {
   state.loading = false;
   state.error = action.payload || 'An error occurred';
+  state.status = 'failed';
 };
 
 const authSlice = createSlice({

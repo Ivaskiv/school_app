@@ -45,11 +45,15 @@ const loginWithToken = async (apiFunc, credentials, thunkAPI) => {
 
 export const registerSchoolAndAdminAsync = createAsyncThunk(
   'auth/registerSchoolAndAdmin',
-  async (data, { rejectWithValue }) => {
-    return handleApiRequest(registerSchoolAndAdmin, data, rejectWithValue);
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/register`, formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
-
 export const registerAdmin = createApiThunk('auth/registerAdmin', registerSchoolAndAdmin);
 
 export const loginAdmin = createApiThunk('auth/loginAdmin', (credentials, thunkAPI) =>

@@ -37,17 +37,23 @@ const RegistrationForm = () => {
       return;
     }
 
-    // Додаємо роль адміністратора
     const formDataWithRole = {
-      ...formData,
-      adminRole: 'admin', // Роль адміністратора
+      schoolName,
+      schoolAddress,
+      schoolEmail,
+      adminName,
+      adminEmail,
+      adminPassword,
+      adminRole: 'mainAdmin',
     };
 
     try {
       const response = await dispatch(registerSchoolAndAdminAsync(formDataWithRole));
+
       if (response.error) {
         throw new Error(response.error.message);
       }
+
       toast.success('School and admin registered successfully!');
     } catch (error) {
       console.error('Registration error:', error);
