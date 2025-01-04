@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { registerSchoolAndAdminAsync } from '../../../features/auth/redux/authOperations';
+import { registerSchoolAndAdmin } from '../../../features/auth/redux/authOperations';
 
 export default function RegistrationForm() {
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ export default function RegistrationForm() {
     console.log('Dispatching form data:', formDataWithRole);
 
     try {
-      const response = await dispatch(registerSchoolAndAdminAsync(formDataWithRole));
+      const response = await dispatch(registerSchoolAndAdmin(formDataWithRole));
       console.log('Registration response:', response);
 
       if (response.type.includes('rejected')) {

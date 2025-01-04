@@ -4,7 +4,7 @@ import {
   loginUser,
   logout,
   registerAdmin,
-  registerSchoolAndAdminAsync,
+  registerSchoolAndAdmin,
   registerUser,
 } from './authOperations';
 
@@ -68,9 +68,9 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(registerSchoolAndAdminAsync.pending, handlePending)
-      .addCase(registerSchoolAndAdminAsync.fulfilled, handleFulfilled)
-      .addCase(registerSchoolAndAdminAsync.rejected, handleRejected)
+      .addCase(registerSchoolAndAdmin.pending, handlePending)
+      .addCase(registerSchoolAndAdmin.fulfilled, handleFulfilled)
+      .addCase(registerSchoolAndAdmin.rejected, handleRejected)
 
       .addCase(registerAdmin.pending, handlePending)
       .addCase(registerAdmin.fulfilled, handleFulfilled)

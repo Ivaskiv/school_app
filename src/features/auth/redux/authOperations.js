@@ -1,7 +1,6 @@
 //authOperations.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  registerSchoolAndAdmin,
   loginAdmin as loginAdminAPI,
   loginUser as loginUserAPI,
   registerUser as registerUserAPI,
@@ -43,7 +42,7 @@ const loginWithToken = async (apiFunc, credentials, thunkAPI) => {
   }
 };
 
-export const registerSchoolAndAdminAsync = createAsyncThunk(
+export const registerSchoolAndAdmin = createAsyncThunk(
   'auth/registerSchoolAndAdmin',
   async (formData, { rejectWithValue }) => {
     try {
