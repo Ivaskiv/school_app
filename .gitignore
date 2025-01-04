@@ -15,3 +15,7 @@ package-lock.json
 
 readmeShoolRedux.md
 
+.env.development
+.env.production
+
+structure.tree
