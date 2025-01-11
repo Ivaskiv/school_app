@@ -2,7 +2,7 @@
 
 node_modules
 build
-
+dist
 .env
 .env.*
 !.env.example
@@ -19,3 +19,4 @@ readmeShoolRedux.md
 .env.production
 
 structure.tree
+

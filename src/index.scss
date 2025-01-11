@@ -21,9 +21,10 @@
   --font-weight-bold: 700;
   --font-weight-light: 300;
 }
+
 @font-face {
   font-family: 'MacPaw Fixel Display';
-  src: url('./assets/fonts/FixelAll/SFProDisplay-Regular.woff2') format('woff2')
+  src: url('./assets/fonts/FixelAll/SFProDisplay-Regular.woff2') format('woff2'),
     url('./assets/fonts/FixelAll/MacPawFixelDisplay-Bold.woff') format('woff');
   font-weight: 400;
   font-style: normal;
@@ -68,6 +69,14 @@
   font-style: normal;
 }
 
+/* Основні стилі */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: var(--font-primary);
   font-weight: var(--font-weight-regular);
@@ -75,49 +84,69 @@ body {
   color: var(--color-primary-dark);
 
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  width: 80%;
+  width: 100%;
+  min-height: 100vh; /* Гарантує, що body займає всю висоту екрану */
   margin: 0;
-  padding: 0 16px;
-  overflow-x: hidden;
+  padding: 0;
+}
 
-  @media (min-width: 320px) {
-    max-width: 100%;
+main {
+  flex: 1; /* Гарантує, що основний контент займає все доступне місце */
+  padding: 20px;
+  margin-bottom: 60px; /* Відступ від футера, якщо він фіксований */
+}
+
+header,
+footer {
+  background-color: #282c34;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+header nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+header nav ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #282c34;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* Медійні запити для адаптивного дизайну */
+@media (min-width: 320px) {
+  body {
     padding: 30px;
   }
+}
 
-  @media (min-width: 375px) {
+@media (min-width: 375px) {
+  body {
     padding: 0 60px;
   }
+}
 
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
+  body {
     padding: 0 80px;
   }
+}
 
-  @media (min-width: 1440px) {
-    max-width: 1440px;
+@media (min-width: 1440px) {
+  body {
     padding: 0 100px;
-    overflow-x: hidden;
   }
-}
-
-h2 {
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-bold);
-}
-
-.light-text {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-light);
-}
-
-.medium-text {
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-.semi-bold-text {
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-semi-bold);
 }

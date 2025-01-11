@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+
+
+<symbol id="icon-users" viewBox="0 0 32 32">
+<path fill="#fbfbfb" style="fill: var(--color1, #fbfbfb)" d="M19.043 22.529l-0.548 2.044-14.306-3.833 0.548-2.044c0 0 1.095-4.087 8.248-2.171s6.058 6.004 6.058 6.004zM18.067 11.863c0.19-0.707 0.165-1.455-0.070-2.149s-0.671-1.302-1.252-1.747c-0.581-0.446-1.281-0.709-2.012-0.757s-1.459 0.122-2.094 0.488c-0.634 0.366-1.146 0.912-1.469 1.569s-0.446 1.395-0.35 2.121c0.096 0.726 0.404 1.407 0.887 1.958s1.118 0.946 1.825 1.135c0.949 0.254 1.959 0.121 2.81-0.37s1.471-1.3 1.725-2.248zM20.077 18.425c0.498 0.654 0.846 1.41 1.021 2.214s0.171 1.636-0.011 2.438l-0.548 2.044 4.087 1.095 0.548-2.044c0 0 0.994-3.709-5.097-5.747zM21.58 8.971c-0.702-0.192-1.447-0.166-2.134 0.074 0.388 1.034 0.443 2.163 0.158 3.229s-0.898 2.017-1.751 2.718c0.475 0.552 1.106 0.947 1.811 1.131 0.948 0.254 1.959 0.121 2.81-0.37s1.471-1.3 1.725-2.248c0.254-0.949 0.121-1.959-0.37-2.81s-1.3-1.471-2.248-1.725z"></path>
+</symbol>
+
+<symbol id="icon-fe_check" viewBox="0 0 32 32">
+<path fill="#54be96" style="fill: var(--color2, #54be96)" d="M8 13.333l-2.667 2.667 8 8 13.333-13.333-2.667-2.667-10.667 10.667-5.333-5.333z"></path>
+</symbol>
+
+
+<symbol id="icon-eye" viewBox="0 0 32 32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M1.333 16c0 0 5.333-10.667 14.667-10.667s14.667 10.667 14.667 10.667-5.333 10.667-14.667 10.667c-9.333 0-14.667-10.667-14.667-10.667z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M16 20c2.209 0 4-1.791 4-4s-1.791-4-4-4c-2.209 0-4 1.791-4 4s1.791 4 4 4z"></path>
+</symbol>
+
+<symbol id="icon-eye-off" viewBox="0 0 32 32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M23.92 23.92c-2.279 1.737-5.054 2.7-7.92 2.747-9.333 0-14.667-10.667-14.667-10.667 1.659-3.091 3.959-5.791 6.747-7.92M13.2 5.653c0.918-0.215 1.857-0.322 2.8-0.32 9.333 0 14.667 10.667 14.667 10.667-0.809 1.514-1.775 2.94-2.88 4.253M18.827 18.827c-0.366 0.393-0.808 0.708-1.298 0.927s-1.020 0.336-1.557 0.346c-0.537 0.009-1.071-0.089-1.569-0.291s-0.95-0.501-1.33-0.88c-0.38-0.38-0.679-0.832-0.88-1.33s-0.3-1.032-0.29-1.569c0.009-0.537 0.127-1.067 0.346-1.558s0.534-0.932 0.927-1.298"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.2" d="M1.333 1.333l29.333 29.333"></path>
+</symbol>
+
+<symbol id="icon-close_btn" viewBox="0 0 32 32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2.5" d="M24 8l-16 16"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2.5" d="M8 8l16 16"></path>
+</symbol>
+
+
+  </defs>
+</svg>
+
+
+
+
+
+    
+

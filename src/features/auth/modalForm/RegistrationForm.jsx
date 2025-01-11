@@ -1,127 +1,135 @@
-import { useState, useCallback } from 'react';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { registerSchoolAndAdmin } from '../../../features/auth/redux/authOperations';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import { ref, set } from 'firebase/database';
+import schoolRegistrationSchema from '../models/schoolRegistrationSchema';
+import { database } from '../../../firebase/firebaseConfig';
+import { initialSchoolData } from './initialSchoolData';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import style from './index.module.scss';
 
-export default function RegistrationForm() {
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    schoolName: '123',
-    schoolAddress: 'str123',
-    schoolEmail: '123@gmail.com',
-    adminName: 'admin123',
-    adminEmail: 'admin123@gmail.com',
-    adminPassword: 'admin123@123',
+export default function RegistrationForm({ onClose }) {
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Стейт для показу пароля
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: joiResolver(schoolRegistrationSchema),
   });
 
-  const handleInputChange = useCallback(e => {
-    const { name, value } = e.target;
-    console.log(`Input changed: ${name} = ${value}`);
-    setFormData(prevState => ({ ...prevState, [name]: value }));
-  }, []);
+  const generateSchoolKey = (schoolName, schoolId) =>
+    `${schoolName.replace(/\s+/g, '_').toLowerCase()}_${schoolId}`;
 
-  const handleSubmit = async event => {
-    event.preventDefault();
+  const handleUseDefaultData = () => {
+    const { schoolName, schoolAddress, schoolEmail, mainAdmin } = initialSchoolData.schoolData;
 
-    const { schoolName, schoolAddress, schoolEmail, adminName, adminEmail, adminPassword } =
-      formData;
-
-    console.log('Form submitted with data:', formData);
-
-    if (
-      !schoolName ||
-      !schoolAddress ||
-      !schoolEmail ||
-      !adminName ||
-      !adminEmail ||
-      !adminPassword
-    ) {
-      toast.error('All fields are required!');
-      return;
-    }
-
-    const formDataWithRole = {
+    reset({
       schoolName,
       schoolAddress,
       schoolEmail,
-      adminName,
-      adminEmail,
-      adminPassword,
-      adminRole: 'mainAdmin',
+      adminName: mainAdmin.adminName,
+      adminEmail: mainAdmin.adminEmail,
+      adminPassword: mainAdmin.adminPassword,
+    });
+
+    console.log('Test data populated in the form');
+  };
+
+  const onSubmit = async data => {
+    const { schoolName, schoolAddress, schoolEmail, adminName, adminEmail, adminPassword } = data;
+    const schoolId = `school${new Date().getTime()}`;
+    const formattedSchoolKey = generateSchoolKey(schoolName, schoolId);
+
+    const schoolData = {
+      schoolData: { schoolName, schoolAddress, schoolEmail, schoolId },
+      admins: { mainAdmin: { adminName, adminEmail, adminPassword } },
+      classes: {},
+      students: {},
+      subjects: {},
+      teachers: {},
+      principal: null,
     };
 
-    console.log('Dispatching form data:', formDataWithRole);
-
     try {
-      const response = await dispatch(registerSchoolAndAdmin(formDataWithRole));
-      console.log('Registration response:', response);
-
-      if (response.type.includes('rejected')) {
-        console.error('Registration failed:', response.payload);
-        toast.error(response.payload || 'Registration failed.');
-        return;
-      }
-
-      toast.success('School and admin registered successfully!');
-      console.log('Registration successful!');
+      setLoading(true);
+      const schoolRef = ref(database, `schools/${formattedSchoolKey}`);
+      await set(schoolRef, schoolData);
+      console.log(`School registered successfully with ID: ${schoolId}`);
+      reset();
+      onClose();
     } catch (error) {
-      console.error('Registration error:', error.message);
-      toast.error(error.message || 'Registration failed.');
+      console.error('Error registering school:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const formFields = [
+    { label: 'School Name', name: 'schoolName', type: 'text' },
+    { label: 'School Address', name: 'schoolAddress', type: 'text' },
+    { label: 'School Email', name: 'schoolEmail', type: 'email' },
+    { label: 'Administrator Name', name: 'adminName', type: 'text' },
+    { label: 'Admin Email', name: 'adminEmail', type: 'email' },
+    {
+      label: 'Administrator Password',
+      name: 'adminPassword',
+      type: showPassword ? 'text' : 'password',
+    },
+  ];
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register School & Admin</h2>
-      <input
-        type="text"
-        name="schoolName"
-        placeholder="School Name"
-        value={formData.schoolName}
-        onChange={handleInputChange}
-        required
-      />
-      <input
-        type="text"
-        name="schoolAddress"
-        placeholder="School Address"
-        value={formData.schoolAddress}
-        onChange={handleInputChange}
-        required
-      />
-      <input
-        type="email"
-        name="schoolEmail"
-        placeholder="School Email"
-        value={formData.schoolEmail}
-        onChange={handleInputChange}
-        required
-      />
-      <input
-        type="text"
-        name="adminName"
-        placeholder="Admin Name"
-        value={formData.adminName}
-        onChange={handleInputChange}
-        required
-      />
-      <input
-        type="email"
-        name="adminEmail"
-        placeholder="Admin Email"
-        value={formData.adminEmail}
-        onChange={handleInputChange}
-        required
-      />
-      <input
-        type="password"
-        name="adminPassword"
-        placeholder="Admin Password"
-        value={formData.adminPassword}
-        onChange={handleInputChange}
-        required
-      />
-      <button type="submit">Register</button>
-    </form>
+    <>
+      <div>
+        <h1>Registration Form</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {formFields.map(({ label, name, type }, index) => (
+            <div key={index} className={style.formGroup}>
+              <label>{label}:</label>
+              <input
+                type={type}
+                {...register(name)}
+                className={errors[name] ? style.errorInput : ''}
+              />
+              {errors[name] && <p className={style.errorText}>{errors[name].message}</p>}
+
+              {name === 'adminPassword' && (
+                <div className={style.passwordWrapper}>
+                  <span
+                    onClick={togglePasswordVisibility}
+                    style={{ cursor: 'pointer', marginLeft: '10px' }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+          <button type="submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+        </form>
+      </div>
+      <hr />
+      <button onClick={handleLoginClick} className={style.switchFormBtn}>
+        Go to Login
+      </button>
+      <button onClick={handleUseDefaultData} disabled={loading}>
+        {loading ? 'Loading...' : 'Use Default Test Data'}
+      </button>
+    </>
   );
 }

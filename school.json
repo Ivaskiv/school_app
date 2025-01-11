@@ -1,0 +1,288 @@
+{
+  "schools": {
+    "school1": {
+      "school_id": 1,
+      "name": "Greenwood High School",
+      "principal": {
+        "id": 1,
+        "name": "John Smith",
+        "role": "Principal"
+      },
+      "admins": [
+        {
+          "id": 2,
+          "name": "Alice Walker",
+          "role": "Main Admin"
+        },
+        {
+          "id": 3,
+          "name": "Michael Brown",
+          "role": "Admin"
+        }
+      ],
+      "classes": {
+        "class1": {
+          "id": 1,
+          "name": "1-А",
+          "class_teacher_id": 1,
+          "class_rep_id": 4,
+          "students": {
+            "student1": {
+              "id": 1,
+              "name": "Alice Green",
+              "age": 10,
+              "subject_ids": [1, 2],
+              "class_id": 1
+            },
+            "student2": {
+              "id": 2,
+              "name": "Bob Brown",
+              "age": 11,
+              "subject_ids": [2, 3],
+              "class_id": 1
+            }
+          }
+        },
+        "class2": {
+          "id": 2,
+          "name": "1-Б",
+          "class_teacher_id": 2,
+          "class_rep_id": 5,
+          "students": {
+            "student3": {
+              "id": 3,
+              "name": "Eve Black",
+              "age": 10,
+              "subject_ids": [1, 3],
+              "class_id": 2
+            },
+            "student4": {
+              "id": 4,
+              "name": "Tom White",
+              "age": 11,
+              "subject_ids": [2, 3],
+              "class_id": 2
+            }
+          }
+        }
+      },
+      "teachers": {
+        "teacher1": {
+          "id": 1,
+          "name": "Olga Petrovna",
+          "subjects": [
+            {
+              "id": 1,
+              "name": "Mathematics"
+            },
+            {
+              "id": 2,
+              "name": "Literature"
+            }
+          ],
+          "role": "Class Teacher"
+        },
+        "teacher2": {
+          "id": 2,
+          "name": "Igor Ivanov",
+          "subjects": [
+            {
+              "id": 2,
+              "name": "Literature"
+            },
+            {
+              "id": 3,
+              "name": "History"
+            }
+          ],
+          "role": "Class Teacher"
+        },
+        "teacher3": {
+          "id": 3,
+          "name": "Maria Ivanova",
+          "subjects": [
+            {
+              "id": 1,
+              "name": "Mathematics"
+            }
+          ],
+          "role": "Subject Teacher"
+        }
+      },
+      "subjects": {
+        "subject1": {
+          "id": 1,
+          "name": "Mathematics"
+        },
+        "subject2": {
+          "id": 2,
+          "name": "Literature"
+        },
+        "subject3": {
+          "id": 3,
+          "name": "History"
+        }
+      },
+      "students": {
+        "student1": {
+          "id": 1,
+          "name": "Alice Green",
+          "age": 10,
+          "class_id": 1
+        },
+        "student2": {
+          "id": 2,
+          "name": "Bob Brown",
+          "age": 11,
+          "class_id": 1
+        },
+        "student3": {
+          "id": 3,
+          "name": "Eve Black",
+          "age": 10,
+          "class_id": 2
+        },
+        "student4": {
+          "id": 4,
+          "name": "Tom White",
+          "age": 11,
+          "class_id": 2
+        }
+      }
+    },
+    "school2": {
+      "school_id": 2,
+      "name": "Riverdale School",
+      "principal": {
+        "id": 6,
+        "name": "Sophia Johnson",
+        "role": "Principal"
+      },
+      "admins": [
+        {
+          "id": 7,
+          "name": "David Clark",
+          "role": "Main Admin"
+        }
+      ],
+      "classes": {
+        "class3": {
+          "id": 3,
+          "name": "2-А",
+          "class_teacher_id": 4,
+          "class_rep_id": 8,
+          "students": {
+            "student5": {
+              "id": 5,
+              "name": "James Miller",
+              "age": 12,
+              "subject_ids": [1, 2],
+              "class_id": 3
+            },
+            "student6": {
+              "id": 6,
+              "name": "Sophia Davis",
+              "age": 13,
+              "subject_ids": [1, 3],
+              "class_id": 3
+            }
+          }
+        },
+        "class4": {
+          "id": 4,
+          "name": "2-Б",
+          "class_teacher_id": 5,
+          "class_rep_id": 9,
+          "students": {
+            "student7": {
+              "id": 7,
+              "name": "Charlotte Evans",
+              "age": 12,
+              "subject_ids": [1, 2],
+              "class_id": 4
+            },
+            "student8": {
+              "id": 8,
+              "name": "Henry Wilson",
+              "age": 13,
+              "subject_ids": [2, 3],
+              "class_id": 4
+            }
+          }
+        }
+      },
+      "teachers": {
+        "teacher4": {
+          "id": 4,
+          "name": "Lily White",
+          "subjects": [
+            {
+              "id": 1,
+              "name": "Mathematics"
+            },
+            {
+              "id": 2,
+              "name": "Literature"
+            }
+          ],
+          "role": "Class Teacher"
+        },
+        "teacher5": {
+          "id": 5,
+          "name": "John Davis",
+          "subjects": [
+            {
+              "id": 2,
+              "name": "Literature"
+            },
+            {
+              "id": 3,
+              "name": "History"
+            }
+          ],
+          "role": "Class Teacher"
+        }
+      },
+      "subjects": {
+        "subject1": {
+          "id": 1,
+          "name": "Mathematics"
+        },
+        "subject2": {
+          "id": 2,
+          "name": "Literature"
+        },
+        "subject3": {
+          "id": 3,
+          "name": "History"
+        }
+      },
+      "students": {
+        "student5": {
+          "id": 5,
+          "name": "James Miller",
+          "age": 12,
+          "class_id": 3
+        },
+        "student6": {
+          "id": 6,
+          "name": "Sophia Davis",
+          "age": 13,
+          "class_id": 3
+        },
+        "student7": {
+          "id": 7,
+          "name": "Charlotte Evans",
+          "age": 12,
+          "class_id": 4
+        },
+        "student8": {
+          "id": 8,
+          "name": "Henry Wilson",
+          "age": 13,
+          "class_id": 4
+        }
+      }
+    }
+  }
+}

@@ -25,7 +25,6 @@ import relationsReducer from '../features/tableRelations/redux/relationsSlice';
 import classTeacherReducer from '../features/сlassesRelations/classTeacher/redux/classTeacherSlice';
 const rootReducer = combineReducers({
   auth: authReducer,
-
   school: schoolReducer,
   pupils: pupilsReducer,
   teachers: teachersReducer,

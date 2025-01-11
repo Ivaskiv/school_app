@@ -1,14 +1,15 @@
-import { Navigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
+import { useSelector } from 'react-redux';
 
-export const PrivateRoute = ({ element, redirectTo = '/' }) => {
-  const { isLoggedIn, isRefreshing } = useAuth();
-  const shouldRedirect = !isLoggedIn && !isRefreshing;
+export const PrivateRoute = ({ children }) => {
+  const navigate = useNavigate();
 
-  return shouldRedirect ? <Navigate to={redirectTo} /> : element;
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const token = useSelector(state => state.auth.token);
+
+  const isAuthenticated = token || user;
+
+  return isAuthenticated ? children : navigate('/register');
 };
-
-// PrivateRoute використовує useAuth() для перевірки авторизації користувача.
-//Якщо користувач авторизований, PrivateRoute рендерить переданий компонент.
-//Якщо користувач не авторизований, він перенаправляється на сторінку
-//логіну(/login).

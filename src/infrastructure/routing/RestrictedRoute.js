@@ -8,5 +8,3 @@ export const RestrictedRoute = ({ element, redirectTo = '/' }) => {
 };
 
 export default RestrictedRoute;
-
-//якщо користувач увійшов у систему (isLoggedIn === true), його перенаправлять за вказаним шляхом (redirectTo), інакше буде відображено переданий компонент (Element).

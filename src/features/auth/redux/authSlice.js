@@ -1,43 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  loginAdmin,
-  loginUser,
+  login,
   logout,
-  registerAdmin,
+  register,
   registerSchoolAndAdmin,
-  registerUser,
+  // registerUser,
+  setAuthToken,
 } from './authOperations';
 
 const initialState = {
   school: null,
   admin: null,
-  status: 'idle',
-  error: null,
   user: null,
   token: null,
-  loading: false,
   roles: [],
-  currentUser: {},
-};
-
-const handlePending = state => {
-  state.loading = true;
-  state.error = null;
-  state.status = 'loading';
-};
-
-const handleFulfilled = (state, action) => {
-  state.loading = false;
-  state.token = action.payload.token;
-  state.user = action.payload.user;
-  state.roles = action.payload.roles || [];
-  state.status = 'succeeded';
-};
-
-const handleRejected = (state, action) => {
-  state.loading = false;
-  state.error = action.payload || 'An error occurred';
-  state.status = 'failed';
+  status: 'idle',
+  error: null,
+  loading: false,
 };
 
 const authSlice = createSlice({
@@ -47,63 +26,88 @@ const authSlice = createSlice({
     clearAuthState(state) {
       state.user = null;
       state.token = null;
+      state.roles = [];
       state.error = null;
       state.loading = false;
-      state.roles = [];
-      state.currentUser = null;
-    },
-    setUser(state, action) {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
     },
     setRoles(state, action) {
       state.roles = action.payload;
     },
-    setCurrentUser(state, action) {
-      state.currentUser = action.payload;
+    setUser(state, action) {
+      state.user = action.payload;
     },
-    setToken(state, action) {
-      state.token = action.payload;
+    clearUser(state) {
+      state.user = null;
+      state.token = null;
+      state.roles = [];
+      state.error = null;
+      state.loading = false;
     },
   },
   extraReducers: builder => {
+    const handlePending = state => {
+      state.loading = true;
+      state.error = null;
+    };
+
+    const handleFulfilled = (state, { payload }) => {
+      state.loading = false;
+
+      if (payload?.token) {
+        state.token = payload.token;
+        setAuthToken(payload.token);
+      } else {
+        state.token = null;
+      }
+
+      state.user = payload?.user || null;
+      state.roles = payload?.roles || [];
+    };
+
+    const handleRejected = (state, { payload }) => {
+      state.loading = false;
+      state.error = payload || 'An error occurred';
+    };
+
     builder
       .addCase(registerSchoolAndAdmin.pending, handlePending)
       .addCase(registerSchoolAndAdmin.fulfilled, handleFulfilled)
       .addCase(registerSchoolAndAdmin.rejected, handleRejected)
-
-      .addCase(registerAdmin.pending, handlePending)
-      .addCase(registerAdmin.fulfilled, handleFulfilled)
-      .addCase(registerAdmin.rejected, handleRejected)
-
-      .addCase(registerUser.pending, handlePending)
-      .addCase(registerUser.fulfilled, handleFulfilled)
-      .addCase(registerUser.rejected, handleRejected)
-
-      .addCase(loginAdmin.pending, handlePending)
-      .addCase(loginAdmin.fulfilled, handleFulfilled)
-      .addCase(loginAdmin.rejected, handleRejected)
-
-      .addCase(loginUser.pending, handlePending)
-      .addCase(loginUser.fulfilled, handleFulfilled)
-      .addCase(loginUser.rejected, handleRejected)
-
-      .addCase(logout.pending, handlePending)
-      .addCase(logout.fulfilled, state => {
-        state.loading = false;
-        state.token = null;
-        state.user = null;
+      .addCase(login.pending, state => {
+        state.loading = true;
         state.error = null;
-        state.roles = [];
       })
-      .addCase(logout.rejected, handleRejected);
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.token = action.payload.token;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // .addCase(login.pending, handlePending)
+      // .addCase(login.fulfilled, handleFulfilled)
+      // .addCase(login.rejected, handleRejected)
+      .addCase(register.pending, handlePending)
+      .addCase(register.fulfilled, handleFulfilled)
+      .addCase(register.rejected, handleRejected)
+      .addCase(logout.fulfilled, state => {
+        state.user = null;
+        state.token = null;
+        state.roles = [];
+        state.error = null;
+        state.loading = false;
+        state.isAuthenticated = false;
+      });
   },
 });
 
-export const { clearAuthState, setUser, setRoles, setCurrentUser, setToken } = authSlice.actions;
+export const { clearAuthState, setRoles, setUser, clearUser } = authSlice.actions;
 
-export const selectRoles = state => state.auth?.roles || [];
-export const selectCurrentUser = state => state.auth?.currentUser || null;
-export const selectIsAuthenticated = state => Boolean(state.auth.token);
+export const selectUser = state => state.auth.user;
+export const selectIsAuthenticated = state => state.auth.isAuthenticated;
+export const selectAuthLoading = state => state.auth.loading;
+export const selectAuthError = state => state.auth.error;
 
 export default authSlice.reducer;
