@@ -8,6 +8,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  fetchSignInMethodsForEmail,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebaseConfig';
@@ -79,9 +81,12 @@ export const register = createAsyncThunk(
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      // Оновлення профілю користувача
       const displayName = role === 'SchoolAdmin' ? schoolName : name;
       await updateProfile(user, { displayName });
 
+      // Додавання інформації до Firestore
       const docRef =
         role === 'SchoolAdmin' ? doc(db, 'schools', user.uid) : doc(db, 'users', user.uid);
       const docData =
@@ -101,13 +106,20 @@ export const register = createAsyncThunk(
             };
 
       await setDoc(docRef, docData);
+
+      // Надсилання листа підтвердження
+      if (!user.emailVerified) {
+        await sendEmailVerification(user);
+        toast.warn('Your email is not verified. Verification email sent.');
+      }
+
+      toast.success('User registered successfully!');
       return { uid: user.uid, email: user.email, displayName, role };
     } catch (error) {
       return handleError(error, rejectWithValue);
     }
   }
 );
-
 // Логін
 export const login = createAsyncThunk(
   'auth/login',
@@ -148,3 +160,36 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
     return handleError(error, rejectWithValue);
   }
 });
+
+// Перевірка наявності email
+export const checkEmailExists = createAsyncThunk(
+  'auth/checkEmailExists',
+  async (email, { rejectWithValue }) => {
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.length > 0) {
+        toast.warn('Email вже використовується!');
+        return true;
+      } else {
+        toast.success('Email доступний для реєстрації.');
+        return false;
+      }
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// Скидання пароля
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success('Лист для скидання пароля надіслано!');
+      return true;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
