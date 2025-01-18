@@ -3,6 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getDatabase, ref, get, onValue } from 'firebase/database';
 import { setSchools } from './schoolsSlice';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../../firebase/firebaseConfig';
 
 export const updateSchool = createAsyncThunk(
   'schools/updateSchool',
@@ -56,22 +59,26 @@ export const getSchoolById = createAsyncThunk(
 );
 
 export const getSchoolsData = createAsyncThunk(
-  'schools/fetchSchools',
-  async (_, { rejectWithValue }) => {
+  'schools/getSchoolsData',
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState();
+    const isAuthenticated = state.auth.isAuthenticated;
+
+    if (!isAuthenticated) {
+      const errorMessage = 'Permission denied: User is not authenticated.';
+      toast.error(errorMessage);
+      return rejectWithValue(errorMessage);
+    }
+
     try {
-      const db = getDatabase();
-      const schoolsRef = ref(db, 'schools');
-      const snapshot = await get(schoolsRef);
-      console.log('Snapshot exists:', snapshot.exists());
-      if (snapshot.exists()) {
-        console.log('Schools data:', snapshot.val());
-        return snapshot.val();
-      } else {
-        throw new Error('No data available');
-      }
+      const schoolsCollection = collection(db, 'schools');
+      const snapshot = await getDocs(schoolsCollection);
+      const schools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return schools;
     } catch (error) {
-      console.error('Error fetching schools:', error);
-      return rejectWithValue(error.message);
+      const errorMessage = error.message || 'Failed to fetch schools data.';
+      toast.error(errorMessage);
+      return rejectWithValue(errorMessage);
     }
   }
 );

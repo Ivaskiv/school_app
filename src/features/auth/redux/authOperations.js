@@ -10,6 +10,10 @@ import {
   updateProfile,
   fetchSignInMethodsForEmail,
   sendPasswordResetEmail,
+  signInWithEmailLink,
+  setPersistence,
+  sendSignInLinkToEmail,
+  browserLocalPersistence,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebaseConfig';
@@ -68,6 +72,55 @@ export const registerSchoolAndAdmin = createAsyncThunk(
         user: { uid: user.uid, email: user.email, displayName: user.displayName },
         schoolId: user.uid,
       };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// Надсилання посилання для підтвердження реєстрації
+export const sendConfirmationEmail = createAsyncThunk(
+  'auth/sendConfirmationEmail',
+  async (email, { rejectWithValue }) => {
+    try {
+      const baseUrl =
+        import.meta.env.MODE === 'development'
+          ? import.meta.env.VITE_LOCAL_BASE_URL
+          : import.meta.env.VITE_PROD_BASE_URL;
+
+      const actionCodeSettings = {
+        url: `${baseUrl}/finishSignUp?email=${email}`,
+        handleCodeInApp: true,
+      };
+
+      await setPersistence(auth, browserLocalPersistence);
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+
+      // Збереження email у локальному сховищі для подальшої перевірки
+      window.localStorage.setItem('emailForSignIn', email);
+      toast.success(`Confirmation email sent to ${email}. Check your inbox.`);
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// Підтвердження реєстрації через email
+export const confirmSignIn = createAsyncThunk(
+  'auth/confirmSignIn',
+  async (emailLink, { rejectWithValue }) => {
+    try {
+      const email = window.localStorage.getItem('emailForSignIn');
+      if (!email || !signInWithEmailLink(auth, emailLink)) {
+        throw new Error('Invalid email or link.');
+      }
+
+      const userCredential = await signInWithEmailLink(auth, email, emailLink);
+      const user = userCredential.user;
+      window.localStorage.removeItem('emailForSignIn');
+
+      toast.success('Email confirmed successfully!');
+      return { uid: user.uid, email: user.email, displayName: user.displayName };
     } catch (error) {
       return handleError(error, rejectWithValue);
     }

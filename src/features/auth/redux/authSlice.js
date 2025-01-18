@@ -98,11 +98,17 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(getSchoolsData.pending, state => {
+        state.loading = true;
+      })
       .addCase(getSchoolsData.fulfilled, (state, action) => {
+        state.loading = false;
         state.schools = action.payload;
       })
       .addCase(getSchoolsData.rejected, (state, action) => {
-        console.error('Failed to fetch schools:', action.payload);
+        state.loading = false;
+        state.error = action.payload;
+        console.error('Error fetching schools:', action.payload);
       });
   },
 });
