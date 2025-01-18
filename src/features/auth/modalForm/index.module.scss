@@ -1,4 +1,3 @@
-/* index.module.scss */
 .form {
   display: flex;
   flex-direction: column;
@@ -18,18 +17,24 @@ h2 {
   text-align: center;
 }
 
-input {
+input,
+select {
+  width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   transition: border-color 0.3s ease;
-}
 
-input:focus {
-  border-color: #56dcab;
-  outline: none;
+  &:focus {
+    border-color: #56dcab;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #888;
+  }
 }
 
 button {
@@ -41,25 +46,20 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 10px;
-}
 
-button:hover {
-  background-color: #56dcab;
+  &:hover {
+    background-color: #4eb99d;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 }
 
 .btn {
   margin-top: 20px;
   width: 100%;
-}
-
-input[type='text'],
-input[type='email'],
-input[type='password'] {
-  width: 100%;
-}
-
-input[placeholder] {
-  color: #888;
 }
 
 .modalBackdrop {
@@ -82,6 +82,18 @@ input[placeholder] {
   width: 100%;
 }
 
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .form {
     padding: 15px;
@@ -95,15 +107,4 @@ input[placeholder] {
   button {
     width: 100%;
   }
-}
-.passwordWrapper {
-  position: relative;
-}
-
-.eyeIcon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
 }

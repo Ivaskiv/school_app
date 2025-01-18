@@ -1,13 +1,13 @@
-import { useForm } from 'react-hook-form'; // Правильний імпорт
-import { joiResolver } from '@hookform/resolvers/joi'; // Правильний імпорт для Joi
-import schoolLoginSchema from '../models/schoolLoginSchema'; // Схема валідації Joi
-import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase метод
-import { auth } from '../../../firebase/firebaseConfig'; // Firebase конфігурація
-import style from './index.module.scss'; // Стили
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Іконки
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Іконки для пароля
-import { useState } from 'react'; // useState для пароля
-import { useNavigate } from 'react-router-dom'; // Навігація
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import schoolLoginSchema from '../models/schoolLoginSchema';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../firebase/firebaseConfig';
+import style from './index.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onClose }) => {
   const navigate = useNavigate();
@@ -16,18 +16,33 @@ const LoginForm = ({ onClose }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }, // Отримуємо помилки
+    formState: { errors },
   } = useForm({
-    resolver: joiResolver(schoolLoginSchema), // Підключаємо Joi для валідації
+    resolver: joiResolver(schoolLoginSchema),
   });
 
   const onSubmit = async data => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      console.log('Login successful');
+      console.log('Submitting login data', data);
+
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const user = userCredential.user;
+      console.log('User logged in:', user);
+
+      navigate('/school');
+
       onClose();
     } catch (error) {
       console.error('Login failed:', error.message);
+      if (error.code === 'auth/user-not-found') {
+        alert('Користувача з таким email не знайдено. Перевірте правильність введеного email.');
+      } else if (error.code === 'auth/wrong-password') {
+        alert('Невірний пароль. Спробуйте ще раз.');
+      } else if (error.code === 'auth/invalid-email') {
+        alert('Некоректний формат email.');
+      } else {
+        alert('Сталася помилка при вході: ' + error.message);
+      }
     }
   };
 

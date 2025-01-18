@@ -1,4 +1,3 @@
-// src/layouts/footer/Footer.jsx
 import style from './index.module.scss';
 
 export default function Footer() {

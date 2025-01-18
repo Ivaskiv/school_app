@@ -1,0 +1,26 @@
+@use '../../../index.scss' as *;
+
+.footer {
+  background-color: var(--color-primary-dark);
+  padding: 20px 0;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+
+  .footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 auto;
+
+    p {
+      color: var(--color-white-text);
+      margin: 0;
+      font-size: 14px;
+      font-family: var(--font-secondary);
+      font-weight: var(--font-weight-regular);
+    }
+  }
+}

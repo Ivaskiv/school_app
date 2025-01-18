@@ -3,19 +3,46 @@ import axios from '../../../../init';
 import { toast } from 'react-toastify';
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebaseConfig';
+import { setUser, clearUser } from './authSlice';
 
+// Функція для встановлення токена авторизації
 export const setAuthToken = token => {
-  if (token) {
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  } else {
-    delete axios.defaults.headers.common.Authorization;
-  }
+  axios.defaults.headers.common.Authorization = token ? `Bearer ${token}` : '';
+};
+
+// Загальна функція обробки помилок
+const handleError = (error, rejectWithValue) => {
+  const message = error.response?.data?.message || error.message || 'Something went wrong';
+  toast.error(message);
+  return rejectWithValue(message);
+};
+
+export const listenAuthState = dispatch => {
+  onAuthStateChanged(auth, async user => {
+    if (user && !user.emailVerified) {
+      toast.success('Please confirm your email before continuing.');
+      const token = await user.getIdToken();
+      setAuthToken(token);
+      dispatch(
+        setUser({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        })
+      );
+    } else {
+      setAuthToken(null);
+      dispatch(clearUser());
+    }
+  });
 };
 
 export const registerSchoolAndAdmin = createAsyncThunk(
@@ -24,68 +51,28 @@ export const registerSchoolAndAdmin = createAsyncThunk(
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
       await updateProfile(user, { displayName: adminName });
 
       const schoolRef = doc(db, 'schools', user.uid);
       await setDoc(schoolRef, {
         name: schoolName,
-        principal: {
-          id: user.uid,
-          name: adminName,
-          role: 'Principal',
-        },
-        admins: [
-          {
-            id: user.uid,
-            name: adminName,
-            role: 'Main Admin',
-          },
-        ],
-        classes: [],
-        teachers: [],
-        subjects: [],
-        students: [],
+        principal: { id: user.uid, name: adminName, role: 'Principal' },
+        admins: [{ id: user.uid, name: adminName, role: 'Main Admin' }],
         createdAt: new Date(),
       });
 
-      console.log('School and Admin registered successfully!');
       toast.success('School and Admin registered successfully!');
       return {
         user: { uid: user.uid, email: user.email, displayName: user.displayName },
         schoolId: user.uid,
       };
     } catch (error) {
-      console.error('Registration error:', error);
-      if (error.response) {
-        toast.error(error.response.data.message || 'Registration failed');
-      } else if (error.request) {
-        toast.error('No response from server');
-      } else {
-        toast.error('Error setting up request');
-      }
-      return rejectWithValue(error.message || 'Registration failed');
+      return handleError(error, rejectWithValue);
     }
   }
 );
 
-//! firebase
-const saveUserData = async userCredential => {
-  try {
-    const user = userCredential.user;
-    const userRef = doc(db, 'users', user.uid);
-    await setDoc(userRef, {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      role: 'User',
-      createdAt: new Date(),
-    });
-    console.log('User data saved successfully!');
-  } catch (error) {
-    console.error('Error saving user data:', error.message);
-  }
-};
+// Реєстрація користувача
 export const register = createAsyncThunk(
   'auth/register',
   async ({ email, password, name, role, schoolName }, { rejectWithValue }) => {
@@ -94,76 +81,70 @@ export const register = createAsyncThunk(
       const user = userCredential.user;
       const displayName = role === 'SchoolAdmin' ? schoolName : name;
       await updateProfile(user, { displayName });
-      await saveUserData(userCredential);
-      return {
-        uid: user.uid,
-        email: user.email,
-        displayName,
-        role,
-      };
+
+      const docRef =
+        role === 'SchoolAdmin' ? doc(db, 'schools', user.uid) : doc(db, 'users', user.uid);
+      const docData =
+        role === 'SchoolAdmin'
+          ? {
+              name: schoolName,
+              principal: { id: user.uid, name, role: 'Principal' },
+              admins: [{ id: user.uid, name, role: 'Main Admin' }],
+              createdAt: new Date(),
+            }
+          : {
+              uid: user.uid,
+              email: user.email,
+              displayName,
+              role,
+              createdAt: new Date(),
+            };
+
+      await setDoc(docRef, docData);
+      return { uid: user.uid, email: user.email, displayName, role };
     } catch (error) {
-      return rejectWithValue(error.message || 'Registration failed');
+      return handleError(error, rejectWithValue);
     }
   }
 );
+
+// Логін
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
+    if (!email || !password) {
+      toast.error('Email and password are required!');
+      return rejectWithValue('Invalid input');
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      setAuthToken(token);
+      toast.success(`Welcome, ${user.displayName || 'User'}!`);
+      if (!user.emailVerified) {
+        await sendEmailVerification(user);
+        toast.warn('Your email is not verified. Verification email sent.');
+      }
       return {
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
       };
     } catch (error) {
-      return rejectWithValue(error.message || 'Login failed');
+      return handleError(error, rejectWithValue);
     }
   }
 );
-// export const login = createAsyncThunk(
-//   'auth/login',
-//   async ({ email, password }, { rejectWithValue }) => {
-//     if (!email || !password) {
-//       toast.error('Email and password are required!');
-//       return rejectWithValue('Invalid input');
-//     }
 
-//     try {
-//       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-//       const user = userCredential.user;
-//       const token = await user.getIdToken();
-//       setAuthToken(token);
-//       toast.success(`Welcome, ${user.displayName || 'User'}!`);
-
-//       return {
-//         uid: user.uid,
-//         email: user.email,
-//         displayName: user.displayName,
-//         photoURL: user.photoURL,
-//       };
-//     } catch (error) {
-//       return rejectWithValue(error.message || 'Login failed');
-//     }
-//   }
-// );
+// Логаут
 export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
   try {
     await signOut(auth);
     return {};
   } catch (error) {
-    return rejectWithValue(error.message);
+    return handleError(error, rejectWithValue);
   }
 });
-// export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
-//   try {
-//     console.log('Logging out...');
-//     await signOut(auth);
-//     setAuthToken(null);
-//     toast.success('Successfully logged out!');
-//     return null;
-//   } catch (error) {
-//     console.error('Logout error:', error.message);
-//     toast.error(error.message || 'Logout failed');
-//     return rejectWithValue(error.message || 'Logout failed');
-//   }
-// });

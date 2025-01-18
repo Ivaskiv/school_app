@@ -1,0 +1,68 @@
+@use '../../../index.scss' as *;
+
+.dashboardPanelContainer {
+  position: relative;
+  left: 0;
+  width: 200px;
+  height: 100vh;
+  overflow: hidden;
+  transition: width 0.3s ease;
+
+  border-right: 5px solid transparent;
+  border-image: linear-gradient(to bottom, var(--color-text-muted), var(--color-text-muted));
+  border-image-slice: 1;
+
+  &.collapsed {
+    width: 50px;
+  }
+}
+
+.toggleButton {
+  all: unset;
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+
+  right: 3px;
+
+  &:hover {
+    color: var(--color-text-accent);
+    background-color: transparent;
+  }
+
+  .collapsed & {
+    left: 0;
+  }
+}
+
+.navList {
+  list-style: none;
+  padding-top: 10px;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+
+  &.hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  li {
+    margin: 5px 0;
+
+    a {
+      text-decoration: none;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-md);
+      display: block;
+      padding: 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: var(--color-gray-border);
+      }
+    }
+  }
+}

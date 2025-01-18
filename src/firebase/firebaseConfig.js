@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
@@ -16,6 +16,13 @@ export const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+onAuthStateChanged(auth, user => {
+  if (user) {
+    console.log('User is authenticated:', user);
+  } else {
+    console.log('User is not authenticated');
+  }
+});
 export const db = getFirestore(app);
 export const database = getDatabase(app);
 export default app;

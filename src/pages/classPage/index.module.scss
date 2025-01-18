@@ -1,12 +1,15 @@
+@use '../../index.scss' as *;
+
 .listsContainer {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: space-between;
 
   > * {
     flex: 1 1 100%;
   }
+
   @media (min-width: 600px) {
     > * {
       flex: 1 1 calc(50% - 10px);
@@ -19,8 +22,9 @@
     }
   }
 }
+
 .h2Link {
-  color: #007bff;
+  color: var(--color-text-accent);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s, text-decoration 0.3s;
@@ -28,15 +32,21 @@
 
 .h2Link:hover {
   text-decoration: underline;
-  color: #0056b3;
+  color: var(--color-text-primary);
 }
 
 .goBackButton {
   margin-top: 10px;
   padding: 8px 16px;
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
+  background-color: var(--color-gray-light);
+  border: 1px solid var(--color-gray-border);
   cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--color-gray-border);
+  }
 }
 
 .teachersList {
@@ -47,17 +57,27 @@
 
 .teacherCard {
   padding: 16px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-border);
   border-radius: 8px;
   width: 200px;
+  background-color: var(--color-white);
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 .teacherCard h4 {
   margin-bottom: 8px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
 }
 
 .teacherCard select {
   width: 100%;
   padding: 8px;
   margin-top: 8px;
+  border: 1px solid var(--color-gray-border);
+  border-radius: 4px;
 }

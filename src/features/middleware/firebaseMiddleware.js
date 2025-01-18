@@ -2,18 +2,18 @@
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig.js';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const firebaseMiddleware = store => next => async action => {
-  if (action.type === 'auth/login') {
-    const { email, password } = action.payload;
+const firebaseMiddleware = createAsyncThunk(
+  'auth/login',
+  async ({ email, password }, { rejectWithValue }) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      store.dispatch({ type: 'auth/loginSuccess' });
+      return { email };
     } catch (error) {
-      store.dispatch({ type: 'auth/loginError', payload: error.message });
+      return rejectWithValue(error.message);
     }
   }
-  return next(action);
-};
+);
 
 export default firebaseMiddleware;

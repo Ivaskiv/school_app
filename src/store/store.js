@@ -6,8 +6,9 @@ import storage from 'redux-persist/lib/storage';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
 import authReducer from '../features/auth/redux/authSlice';
+import modalAuthReducer from '../features/auth/modalAuth/redux/modalSlice';
 
-import schoolReducer from '../pages/redux/schoolSlice';
+import schoolsReducer from '../features/schools/redux/schoolsSlice';
 import pupilsReducer from '../components/pupilsList/redux/pupilsSlice';
 import teachersReducer from '../components/teachersList/redux/teachersSlice';
 import classesReducer from '../components/classesList/redux/classesSlice';
@@ -25,7 +26,8 @@ import relationsReducer from '../features/tableRelations/redux/relationsSlice';
 import classTeacherReducer from '../features/сlassesRelations/classTeacher/redux/classTeacherSlice';
 const rootReducer = combineReducers({
   auth: authReducer,
-  school: schoolReducer,
+  modalAuth: modalAuthReducer,
+  schools: schoolsReducer,
   pupils: pupilsReducer,
   teachers: teachersReducer,
   classes: classesReducer,

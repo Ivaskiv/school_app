@@ -1,0 +1,156 @@
+@use '../../../index.scss' as *;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: var(--color-white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: 80px;
+}
+
+.logo {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.navMenu {
+  display: flex;
+  gap: 20px;
+}
+
+.navMenu a {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  transition: color 0.3s ease;
+}
+
+.navMenu a:hover,
+.navMenu a.active {
+  color: var(--color-text-accent);
+}
+
+.authButtons,
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnUser {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.btnUser img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.btnLogout {
+  background-color: var(--color-text-error);
+  border: none;
+  color: var(--color-white);
+  padding: 5px 10px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.btnLogout:hover {
+  background-color: var(--color-text-error);
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-text-accent);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--color-text-error);
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Медіа-запити для адаптивної верстки */
+
+/* Мобільні пристрої */
+@media (max-width: 375px) {
+  .header {
+    padding: 15px 20px;
+  }
+
+  .logo {
+    font-size: var(--font-size-lg);
+  }
+
+  .navMenu {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btnUser {
+    font-size: var(--font-size-sm);
+  }
+
+  .btnLogout {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Планшети */
+@media (min-width: 768px) {
+  .header {
+    padding: 20px 40px;
+  }
+
+  .navMenu {
+    gap: 25px;
+  }
+
+  .btnUser {
+    font-size: var(--font-size-md);
+  }
+
+  .btnLogout {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Десктопи */
+@media (min-width: 1440px) {
+  .header {
+    padding: 20px 50px;
+  }
+
+  .logo {
+    font-size: var(--font-size-xxl);
+  }
+
+  .navMenu {
+    gap: 30px;
+  }
+}

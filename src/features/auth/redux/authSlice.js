@@ -1,113 +1,116 @@
+//authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  login,
-  logout,
-  register,
-  registerSchoolAndAdmin,
-  // registerUser,
-  setAuthToken,
-} from './authOperations';
+import { login, logout, register, registerSchoolAndAdmin } from './authOperations';
+import { getSchoolsData } from '../../schools/redux/schoolOperations';
+// import { getAuth, sendEmailVerification } from 'firebase/auth';
+// import { toast } from 'react-toastify';
 
 const initialState = {
-  school: null,
-  admin: null,
-  user: null,
-  token: null,
-  roles: [],
-  status: 'idle',
-  error: null,
+  user: { uid: null, email: null, displayName: null, role: null },
+  isAuthenticated: false,
   loading: false,
+  error: null,
+  schools: [],
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    clearAuthState(state) {
-      state.user = null;
-      state.token = null;
-      state.roles = [];
-      state.error = null;
-      state.loading = false;
-    },
-    setRoles(state, action) {
-      state.roles = action.payload;
+    // login: (state, action) => {
+    //   state.isAuthenticated = true;
+    //   state.token = action.payload.token;
+    // },
+    // logout: state => {
+    //   state.isAuthenticated = false;
+    //   state.token = null;
+    //   localStorage.removeItem('authToken');
+    // },
+    setAuthStatus: state => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        state.isAuthenticated = true;
+        state.token = token;
+      }
     },
     setUser(state, action) {
       state.user = action.payload;
+      state.isAuthenticated = true;
     },
     clearUser(state) {
       state.user = null;
-      state.token = null;
-      state.roles = [];
-      state.error = null;
-      state.loading = false;
+      state.isAuthenticated = false;
     },
   },
   extraReducers: builder => {
-    const handlePending = state => {
-      state.loading = true;
-      state.error = null;
-    };
-
-    const handleFulfilled = (state, { payload }) => {
-      state.loading = false;
-
-      if (payload?.token) {
-        state.token = payload.token;
-        setAuthToken(payload.token);
-      } else {
-        state.token = null;
-      }
-
-      state.user = payload?.user || null;
-      state.roles = payload?.roles || [];
-    };
-
-    const handleRejected = (state, { payload }) => {
-      state.loading = false;
-      state.error = payload || 'An error occurred';
-    };
-
     builder
-      .addCase(registerSchoolAndAdmin.pending, handlePending)
-      .addCase(registerSchoolAndAdmin.fulfilled, handleFulfilled)
-      .addCase(registerSchoolAndAdmin.rejected, handleRejected)
       .addCase(login.pending, state => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        state.token = action.payload.token;
+        state.isAuthenticated = true;
+
+        // const auth = getAuth();
+        // const user = auth.currentUser;
+
+        // if (user && !user.emailVerified) {
+        //   sendEmailVerification(user)
+        //     .then(() => {
+        //       toast.success('Verification email sent!');
+        //       console.log('Verification email sent!');
+        //     })
+        //     .catch(error => {
+        //       toast.error('Error sending verification email.');
+        //       console.error('Error sending verification email:', error);
+        //     });
+        // }
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      // .addCase(login.pending, handlePending)
-      // .addCase(login.fulfilled, handleFulfilled)
-      // .addCase(login.rejected, handleRejected)
-      .addCase(register.pending, handlePending)
-      .addCase(register.fulfilled, handleFulfilled)
-      .addCase(register.rejected, handleRejected)
       .addCase(logout.fulfilled, state => {
-        state.user = null;
-        state.token = null;
-        state.roles = [];
-        state.error = null;
         state.loading = false;
+        state.user = null;
         state.isAuthenticated = false;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(registerSchoolAndAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(registerSchoolAndAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getSchoolsData.fulfilled, (state, action) => {
+        state.schools = action.payload;
+      })
+      .addCase(getSchoolsData.rejected, (state, action) => {
+        console.error('Failed to fetch schools:', action.payload);
       });
   },
 });
 
-export const { clearAuthState, setRoles, setUser, clearUser } = authSlice.actions;
-
-export const selectUser = state => state.auth.user;
+export const { setUser, clearUser } = authSlice.actions;
 export const selectIsAuthenticated = state => state.auth.isAuthenticated;
-export const selectAuthLoading = state => state.auth.loading;
+export const selectUser = state => state.auth.user;
+// export const selectAuthLoading = state => state.auth.loading;
 export const selectAuthError = state => state.auth.error;
 
 export default authSlice.reducer;

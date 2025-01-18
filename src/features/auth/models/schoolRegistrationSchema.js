@@ -35,6 +35,9 @@ const schoolRegistrationSchema = Joi.object({
     'string.min': 'Password must have at least 6 characters.',
     'string.max': 'Password must have less than 30 characters.',
   }),
+  role: Joi.string()
+    .valid('School', 'Main Admin', 'Admin', 'Director', 'Teacher', 'Student')
+    .required(),
 });
 
 export default schoolRegistrationSchema;

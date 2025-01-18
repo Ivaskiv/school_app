@@ -1,46 +1,39 @@
-import { useMemo } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './index.module.scss';
-import ModalAuth from '../../features/auth/modalAuth/ModalAuth';
-import { selectIsAuthenticated, selectUser } from '../../features/auth/redux/authSlice';
-import { logout } from '../../features/auth/redux/authOperations';
+import ModalAuth from '../../../features/auth/modalAuth/ModalAuth';
+import { selectIsAuthenticated, selectUser } from '../../../features/auth/redux/authSlice';
+import { logout } from '../../../features/auth/redux/authOperations';
 import CryptoJS from 'crypto-js';
 
-const getGravatarUrl = (email, size = 200) => {
+const getGravatarUrl = (email, size = 64) => {
   const hash = CryptoJS.MD5(email.trim().toLowerCase()).toString();
   return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`;
 };
 
-const Header = () => {
-  const location = useLocation();
+export default function Header() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [modalType, setModalType] = useState(null);
 
   const user = useSelector(selectUser);
   const authenticated = useSelector(selectIsAuthenticated);
-  const dispatch = useDispatch();
 
-  const userName = useMemo(() => user?.displayName || 'User', [user]);
-
-  // Визначаємо тип модалки залежно від маршруту
-  const modalType =
-    location.pathname === '/login'
-      ? 'login'
-      : location.pathname === '/register'
-      ? 'register'
-      : null;
-
-  const openModal = type => navigate(`/${type}`); // Відкриття модалки через зміну URL
-  const closeModal = () => navigate('/'); // Закриття модалки поверненням на головну сторінку
+  const userName = useMemo(() => user?.displayName || user?.email || 'User', [user]);
 
   const handleLogout = async () => {
     try {
       await dispatch(logout());
-      closeModal();
+      navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
       alert('Failed to log out. Please try again.');
     }
+  };
+
+  const openAuthModal = type => {
+    setModalType(type);
   };
 
   return (
@@ -49,7 +42,6 @@ const Header = () => {
         <div className={style.logo}>
           <span>school.</span>management
         </div>
-
         <nav className={style.navMenu}>
           <NavLink to="/" end className={({ isActive }) => (isActive ? style.active : '')}>
             Home
@@ -65,17 +57,12 @@ const Header = () => {
             </>
           )}
         </nav>
-
         <div className={style.authButtons}>
           {authenticated ? (
             <div className={style.userInfo}>
               <button className={style.btnUser}>
-                <img
-                  src={user?.photoURL ? user.photoURL : getGravatarUrl(user?.email)}
-                  alt="User Avatar"
-                  className={style.avatar}
-                />
-                <div className={style.userName}>{userName}</div>
+                <img src={getGravatarUrl(user?.email)} alt="User Avatar" />
+                <span>{userName}</span>
               </button>
               <button className={style.btnLogout} onClick={handleLogout}>
                 Log out
@@ -83,21 +70,13 @@ const Header = () => {
             </div>
           ) : (
             <>
-              <button className={style.btnLogin} onClick={() => openModal('login')}>
-                Login
-              </button>
-              <button className={style.btnRegistration} onClick={() => openModal('register')}>
-                Registration
-              </button>
+              <button onClick={() => openAuthModal('login')}>Login</button>
+              <button onClick={() => openAuthModal('register')}>Register</button>
             </>
           )}
         </div>
       </header>
-
-      {/* Модалка з формою */}
-      <ModalAuth isOpen={!!modalType} onClose={closeModal} type={modalType} />
+      <ModalAuth isOpen={!!modalType} onClose={() => setModalType(null)} type={modalType} />
     </>
   );
-};
-
-export default Header;
+}

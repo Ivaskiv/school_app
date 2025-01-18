@@ -1,19 +1,28 @@
 import { Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store/store.js';
 import { PrivateRoute } from './infrastructure/routing/PrivateRoute.js';
-import SchoolManagement from './pages/schoolManagement/index.jsx';
-import TabsPages from './pages/tabsPages/index.jsx';
-import ClassPage from './pages/classPage/index.jsx';
-import TeacherPage from './pages/teacherPage/index.jsx';
-import MainLayout from './infrastructure/layout/MainLayout.jsx';
-import AdminPage from './pages/AdminPage/index.jsx';
-import Home from './pages/Home/index.jsx';
-// import RegistrationForm from './features/auth/modalForm/RegistrationForm.jsx';
+import SchoolManagement from './pages/schoolManagement/SchoolManagement.jsx';
+import TabsPages from './pages/tabsPages/TabsPages.jsx';
+import ClassPage from './pages/classPage/ClassPage.jsx';
+import TeacherPage from './pages/teacherPage/TeacherPage.jsx';
+import MainLayout from './infrastructure/layout/mainLayout/MainLayout.jsx';
+import AdminPage from './pages/AdminPage/AdminPage.jsx';
+import Home from './pages/Home/Home.jsx';
+import RegistrationForm from './features/auth/modalForm/RegistrationForm.jsx';
+import { useEffect } from 'react';
+import { listenAuthState } from './features/auth/redux/authOperations.js';
+import SchoolPage from './pages/schoolPage/SchoolPage.jsx';
 // import LoginForm from './features/auth/modalForm/LoginForm.jsx';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    listenAuthState(dispatch);
+  }, [dispatch]);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -28,8 +37,9 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            {/* <Route path="/register" element={<RegistrationForm />} />
-            <Route path="/login" element={<LoginForm />} /> */}
+            <Route path="/register" element={<RegistrationForm isAdmin={true} />} />
+            <Route path="/school-register" element={<RegistrationForm isAdmin={false} />} />
+            <Route path="/school/:schoolId" element={<SchoolPage isAdmin={true} />} />
             <Route path="/school" element={<SchoolManagement />} />
             <Route path="/tabsPages" element={<TabsPages />} />
             <Route path="/class/:classId" element={<ClassPage />} />
